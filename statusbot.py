@@ -22,7 +22,6 @@ import logging
 import time
 import requests
 import msal
-
 import ledshim
 
 # Optional logging
@@ -54,6 +53,7 @@ result = app.acquire_token_by_username_password(
     claims_challenge=None
     )
 try:
+    oldstatus = "nope"
     while "access_token" in result:
         # Calling graph using the access token
         graph_data = requests.get(config["endpoint"], headers={'Authorization': 'Bearer ' + result['access_token']},).json()
@@ -63,31 +63,57 @@ try:
             # print("Setting to green")
             ledshim.set_all(0,255,0,.5)
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
         elif status == "Busy":        
             # print("Setting to red")
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
         elif status == "DoNotDisturb":        
             # print("Setting to red")
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
         elif status == "Idle":        
             # print("Setting to red")
+            ledshim.set_all(0,255,0,.5)
+            ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
+            time.sleep(10)
+        elif status == "Away":        
+            # print("Setting to red")
             ledshim.clear()
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
         elif status == "Offline":        
             # print("Setting to red")
             ledshim.clear()
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
         else:
-            # print("Turning Off")
+            print(time.ctime() + " Teams status is: " + status )
             ledshim.set_all(0,0,255,.5)
             ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + status )
+            oldstatus = status
             time.sleep(10)
 
 except KeyboardInterrupt:
