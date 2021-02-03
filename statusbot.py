@@ -64,7 +64,7 @@ try:
             ledshim.set_all(0,255,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Busy":        
@@ -72,7 +72,7 @@ try:
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "DoNotDisturb":        
@@ -80,7 +80,7 @@ try:
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Idle":        
@@ -88,7 +88,7 @@ try:
             ledshim.set_all(0,255,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Away":        
@@ -96,7 +96,7 @@ try:
             ledshim.clear()
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Offline":        
@@ -104,15 +104,14 @@ try:
             ledshim.clear()
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         else:
-            print(time.ctime() + " Teams status is: " + status )
             ledshim.set_all(0,0,255,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + status )
+                print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
 
