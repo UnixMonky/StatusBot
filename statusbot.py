@@ -99,6 +99,14 @@ try:
                 print(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
+        elif status == "AvailableIdle":        
+            # print("Setting to red")
+            ledshim.clear()
+            ledshim.show()
+            if oldstatus != status:
+                print(time.ctime() + " Teams status is: " + str(status) )
+            oldstatus = status
+            time.sleep(10)
         elif status == "Offline":        
             # print("Setting to red")
             ledshim.clear()
