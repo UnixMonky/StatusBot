@@ -1,0 +1,16 @@
+[Unit]
+Description=StatusBot
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi
+ExecStart=/usr/bin/python3 /home/pi/statusbot.py /home/pi/teams.json
+Restart=on-failure
+StandardOutput=append:/home/pi/statusbot.log
+StandardError=append:/home/pi/statusbot.log
+
+[Install]
+WantedBy=multi-user.target

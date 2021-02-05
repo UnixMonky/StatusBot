@@ -25,7 +25,9 @@ import msal
 import ledshim
 
 # Optional logging
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
+
+logging.info(time.ctime() + " Starting" )
 
 # led blink so we know we've started
 ledshim.set_all(255,255,255,.5)
@@ -35,9 +37,11 @@ ledshim.clear()
 ledshim.set_pixel(1,255,255,255,.5)
 ledshim.show()
 
+logging.info(time.ctime() + " Loading config" )
 config = json.load(open(sys.argv[1]))
 
 # Create a preferably long-lived app instance which maintains a token cache.
+logging.info(time.ctime() + " Getting token" )
 app = msal.PublicClientApplication(
     config["client_id"], authority=config["authority"],
     # token_cache=...  # Default cache is in memory only.
@@ -52,6 +56,8 @@ result = app.acquire_token_by_username_password(
     config["scope"],
     claims_challenge=None
     )
+
+logging.info(time.ctime() + " Starting status checks" )
 try:
     oldstatus = "nope"
     while "access_token" in result:
@@ -60,66 +66,66 @@ try:
         status = graph_data.get('availability') 
         #print(status)
         if status == "Available":
-            # print("Setting to green")
             ledshim.set_all(0,255,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Busy":        
-            # print("Setting to red")
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "DoNotDisturb":        
-            # print("Setting to red")
             ledshim.set_all(255,0,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Idle":        
-            # print("Setting to red")
             ledshim.set_all(0,255,0,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Away":        
-            # print("Setting to red")
             ledshim.clear()
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
+            oldstatus = status
+            time.sleep(10)
+        elif status == "None":        
+            ledshim.clear()
+            ledshim.show()
+            if oldstatus != status:
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "AvailableIdle":        
-            # print("Setting to red")
             ledshim.clear()
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         elif status == "Offline":        
-            # print("Setting to red")
             ledshim.clear()
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.info(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
         else:
             ledshim.set_all(0,0,255,.5)
             ledshim.show()
             if oldstatus != status:
-                print(time.ctime() + " Teams status is: " + str(status) )
+                logging.warning(time.ctime() + " Teams status is: " + str(status) )
             oldstatus = status
             time.sleep(10)
 
@@ -127,27 +133,3 @@ except KeyboardInterrupt:
     logging.info("Exiting due to keyboard interrupt")
     ledshim.clear()
     ledshim.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# if "access_token" in result:
-#     # Calling graph using the access token
-#     graph_data = requests.get(  # Use token to call downstream service
-#         config["endpoint"],
-#         headers={'Authorization': 'Bearer ' + result['access_token']},).json()
-#     print("Graph API call result: %s" % json.dumps(graph_data, indent=2))
-# else:
-#     print(result.get("error"))
-#     print(result.get("error_description"))
-#     print(result.get("correlation_id"))  # You may need this when reporting a bug
