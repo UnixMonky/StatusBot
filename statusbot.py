@@ -26,15 +26,21 @@ import ledshim
 
 # Optional logging
 logging.basicConfig(level=logging.INFO)
-
 logging.info(time.ctime() + " Starting" )
+
+# set led colors:
+green = (0,255,0,.5)
+red = (255,0,0,.5)
+blue = (0,0,255,.5)
+none = (24,255,255,255,.25)
+
 
 # led blink so we know we've started
 ledshim.set_all(255,255,255,.5)
 ledshim.show()
 time.sleep(0.5)
 ledshim.clear()
-ledshim.set_pixel(1,255,255,255,.5)
+ledshim.set_pixel(24,255,255,255,.5)
 ledshim.show()
 
 logging.info(time.ctime() + " Loading config" )
@@ -64,70 +70,87 @@ try:
         # Calling graph using the access token
         graph_data = requests.get(config["endpoint"], headers={'Authorization': 'Bearer ' + result['access_token']},).json()
         status = graph_data.get('availability') 
-        #print(status)
-        if status == "Available":
+
+        if status in [ 'Available' ]:
             ledshim.set_all(0,255,0,.5)
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "Busy":        
+        elif status in [ 'Busy', 'DoNotDisturb']:
             ledshim.set_all(255,0,0,.5)
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "DoNotDisturb":        
-            ledshim.set_all(255,0,0,.5)
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "Idle":        
-            ledshim.set_all(0,255,0,.5)
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "Away":        
+        elif status in [ 'Idle', 'Away', 'AvailableIdle', 'Offline' ]:
             ledshim.clear()
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "None":        
-            ledshim.clear()
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "AvailableIdle":        
-            ledshim.clear()
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
-        elif status == "Offline":        
-            ledshim.clear()
-            ledshim.show()
-            if oldstatus != status:
-                logging.info(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
+            ledshim.set_pixel(24,255,255,255,.25)
         else:
             ledshim.set_all(0,0,255,.5)
-            ledshim.show()
-            if oldstatus != status:
-                logging.warning(time.ctime() + " Teams status is: " + str(status) )
-            oldstatus = status
-            time.sleep(10)
+            result = app.acquire_token_by_username_password(
+                config["username"],
+                config["password"],
+                config["scope"],
+                claims_challenge=None
+                )
+        ledshim.show()
+        if oldstatus != status:
+            logging.info(time.ctime() + " Teams status is: " + str(status) )
+        oldstatus = status
+        time.sleep(10)
+
+
+
+
+        # elif status == "Idle":        
+        #     ledshim.set_all(0,255,0,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # elif status == "Away":        
+        #     ledshim.set_pixel(24,255,255,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # elif status == "AvailableIdle":        
+        #     ledshim.set_pixel(24,255,255,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # elif status == "Offline":        
+        #     ledshim.set_pixel(24,255,255,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # elif status == "None":        
+        #     ledshim.set_pixel(24,255,255,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # elif status == "":        
+        #     ledshim.set_pixel(24,255,255,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.info(time.ctime() + " Teams status is: " + str(status) )
+        #     oldstatus = status
+        #     time.sleep(10)
+        # else:
+        #     ledshim.set_all(0,0,255,.5)
+        #     ledshim.show()
+        #     if oldstatus != status:
+        #         logging.warning(time.ctime() + " Teams status is: '" + str(status) +"'" )
+        #     oldstatus = status
+        #     ## assume if we're here that something went wrong and get a new token
+        #     result = app.acquire_token_by_username_password(
+        #         config["username"],
+        #         config["password"],
+        #         config["scope"],
+        #         claims_challenge=None
+        #         )
+        #     time.sleep(10)
 
 except KeyboardInterrupt:
     logging.info("Exiting due to keyboard interrupt")
